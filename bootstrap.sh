@@ -23,7 +23,9 @@ if [ ! -d "$HOME/.bash_it" ]; then
 fi
 
 if [ ! -d "$HOME/.cfg" ]; then
-  ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> ~/.ssh/known_hosts
+  if command_exists ssh-keyscan; then
+    ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> ~/.ssh/known_hosts
+  fi
   git clone --bare git@github.com:romracer/dotfiles.git $HOME/.cfg
 
   mkdir -p .config-backup
