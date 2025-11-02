@@ -3,7 +3,7 @@ about-alias 'copy SSH keys to remote machine'
 
 ssh-copy-keys() {
   if [ -z "$1" ]; then
-    echo "Usage: ssh-copy-keys user@host"
+    echo "Usage: ssh-copy-keys user@host [keyname]"
     return 1
   fi
 
@@ -13,6 +13,14 @@ ssh-copy-keys() {
     return 1
   fi
 
+  local key_filter="$2"
+  local key_filter_escaped=""
+  
+  # Escape special regex characters in key_filter to prevent regex injection
+  if [ -n "$key_filter" ]; then
+    key_filter_escaped=$(printf '%s\n' "$key_filter" | sed 's/[][\\.|$(){}?+*^-]/\\&/g')
+  fi
+  
   # Find all SSH keys (private and public) using grep
   # Private keys contain "PRIVATE KEY", public keys start with specific key type identifiers
   # Exclude common non-key files like authorized_keys, known_hosts, config
@@ -31,9 +39,18 @@ ssh-copy-keys() {
       ! -name "environment" \
       -exec grep -lE "^(ssh-rsa|ssh-dss|ssh-ed25519|ecdsa-sha2-)" {} \;
   } 2>/dev/null | sort -u)
+  
+  # Filter by key filename if provided
+  if [ -n "$key_filter_escaped" ]; then
+    keyfiles=$(printf '%s\n' "$keyfiles" | grep -E "(^|/)${key_filter_escaped}(\.pub)?$")
+  fi
 
   if [ -z "$keyfiles" ]; then
-    echo "Error: No SSH keys found in ~/.ssh/"
+    if [ -n "$key_filter" ]; then
+      echo "Error: No SSH keys matching '$key_filter' found in ~/.ssh/"
+    else
+      echo "Error: No SSH keys found in ~/.ssh/"
+    fi
     return 1
   fi
 
