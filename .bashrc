@@ -72,5 +72,8 @@ TODO="t"
 # Uncomment this to make Bash-it create alias reload.
 # BASH_IT_RELOAD_LEGACY=1
 
+# Custom Bash It content location
+BASH_IT_CUSTOM="${HOME}/.bash_it_custom"
+
 # Load Bash It
 source "${BASH_IT?}/bash_it.sh"
