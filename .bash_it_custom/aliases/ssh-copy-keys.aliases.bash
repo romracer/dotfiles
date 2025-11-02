@@ -21,14 +21,18 @@ ssh-copy-keys() {
     for keyfile in ~/.ssh/id_*; do
       if [ -f "$keyfile" ]; then
         filename=$(basename "$keyfile")
-        echo "cat > ~/.ssh/$filename << 'EOF_SSH_KEY'"
-        cat "$keyfile"
-        echo "EOF_SSH_KEY"
-        if [[ "$keyfile" == *.pub ]]; then
-          echo "chmod 644 ~/.ssh/$filename"
-        else
-          echo "chmod 600 ~/.ssh/$filename"
-        fi
+        # Use base64 encoding to safely transfer binary/text content
+        echo "base64 -d > ~/.ssh/$filename << 'EOF_B64_KEY'"
+        base64 < "$keyfile"
+        echo "EOF_B64_KEY"
+        case "$filename" in
+          *.pub)
+            echo "chmod 644 ~/.ssh/$filename"
+            ;;
+          *)
+            echo "chmod 600 ~/.ssh/$filename"
+            ;;
+        esac
       fi
     done
   } | ssh "$1" "sh -s"
