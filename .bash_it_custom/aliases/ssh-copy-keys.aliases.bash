@@ -18,7 +18,7 @@ ssh-copy-keys() {
   
   # Escape special regex characters in key_filter to prevent regex injection
   if [ -n "$key_filter" ]; then
-    key_filter_escaped=$(printf '%s\n' "$key_filter" | sed 's/[]\.|$(){}?+*^[]/\\&/g')
+    key_filter_escaped=$(printf '%s\n' "$key_filter" | sed 's/[][\\.|$(){}?+*^]/\\&/g')
   fi
   
   # Find all SSH keys (private and public) using grep
