@@ -20,15 +20,16 @@ ssh-copy-keys() {
     echo "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
     for keyfile in ~/.ssh/id_*; do
       if [ -f "$keyfile" ]; then
-        echo "cat > ~/.ssh/$(basename "$keyfile") << 'EOF_KEY_$(basename "$keyfile")'"
+        filename=$(basename "$keyfile")
+        echo "cat > ~/.ssh/$filename << 'EOF_SSH_KEY'"
         cat "$keyfile"
-        echo "EOF_KEY_$(basename "$keyfile")"
+        echo "EOF_SSH_KEY"
         if [[ "$keyfile" == *.pub ]]; then
-          echo "chmod 644 ~/.ssh/$(basename "$keyfile")"
+          echo "chmod 644 ~/.ssh/$filename"
         else
-          echo "chmod 600 ~/.ssh/$(basename "$keyfile")"
+          echo "chmod 600 ~/.ssh/$filename"
         fi
       fi
     done
-  } | ssh "$1" "bash -s"
+  } | ssh "$1" "sh -s"
 }
