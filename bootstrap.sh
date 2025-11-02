@@ -28,7 +28,7 @@ if [ ! -d "$HOME/.cfg" ]; then
   fi
   git clone --bare git@github.com:romracer/dotfiles.git $HOME/.cfg
 
-  mkdir -p .config-backup
+  mkdir -p $HOME/.config-backup
   set +e
   dotfiles checkout
 
@@ -36,7 +36,7 @@ if [ ! -d "$HOME/.cfg" ]; then
     echo "OK: checked out dotfiles config."
   else
     echo "WARN: backing up pre-existing dotfiles."
-    dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
+    dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} $HOME/.config-backup/{}
 
     dotfiles checkout
     if [ $? = 0 ]; then
