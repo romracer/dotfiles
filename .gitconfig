@@ -1,0 +1,6 @@
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
+[user]
+	signingkey = /home/coder/.ssh/git-commit-signing/coder
