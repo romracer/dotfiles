@@ -14,15 +14,23 @@ ssh-copy-keys() {
   fi
 
   # Find all SSH keys (private and public) using grep
-  # Private keys contain "PRIVATE KEY", public keys start with "ssh-" or "ecdsa-"
+  # Private keys contain "PRIVATE KEY", public keys start with specific key type identifiers
   # Exclude common non-key files like authorized_keys, known_hosts, config
   local keyfiles
-  keyfiles=$(find ~/.ssh -type f \
-    ! -name "authorized_keys" \
-    ! -name "known_hosts" \
-    ! -name "config" \
-    ! -name "environment" \
-    \( -exec grep -lE "PRIVATE KEY" {} \; -o -exec grep -lE "^(ssh-|ecdsa-)" {} \; \) 2>/dev/null | sort -u)
+  keyfiles=$({
+    find ~/.ssh -type f \
+      ! -name "authorized_keys" \
+      ! -name "known_hosts" \
+      ! -name "config" \
+      ! -name "environment" \
+      -exec grep -lE "PRIVATE KEY" {} \;
+    find ~/.ssh -type f \
+      ! -name "authorized_keys" \
+      ! -name "known_hosts" \
+      ! -name "config" \
+      ! -name "environment" \
+      -exec grep -lE "^(ssh-rsa|ssh-dss|ssh-ed25519|ecdsa-sha2-)" {} \;
+  } 2>/dev/null | sort -u)
 
   if [ -z "$keyfiles" ]; then
     echo "Error: No SSH keys found in ~/.ssh/"
@@ -34,7 +42,7 @@ ssh-copy-keys() {
   # Using a single SSH command to avoid multiple authentication prompts
   {
     echo "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
-    echo "$keyfiles" | while IFS= read -r keyfile; do
+    printf '%s\n' "$keyfiles" | while IFS= read -r keyfile; do
       if [ -f "$keyfile" ]; then
         filename=$(basename "$keyfile")
         # Use base64 encoding to safely transfer binary/text content
