@@ -17,9 +17,9 @@ ssh-copy-keys() {
   local key_filter_escaped=""
   
   # Strip .pub extension if present, since we want to match both private and public keys
-  # Escape special regex characters in key_filter to prevent regex injection
   if [ -n "$key_filter" ]; then
     local key_filter_base="${key_filter%.pub}"
+    # Escape special regex characters in key_filter to prevent regex injection
     key_filter_escaped=$(printf '%s\n' "$key_filter_base" | sed 's/[][\\.|$(){}?+*^-]/\\&/g')
   fi
   
