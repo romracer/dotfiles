@@ -14,6 +14,12 @@ ssh-copy-keys() {
   fi
 
   local key_filter="$2"
+  local key_filter_escaped=""
+  
+  # Escape special regex characters in key_filter to prevent regex injection
+  if [ -n "$key_filter" ]; then
+    key_filter_escaped=$(printf '%s\n' "$key_filter" | sed 's/[]\.|$(){}?+*^[]/\\&/g')
+  fi
   
   # Find all SSH keys (private and public) using grep
   # Private keys contain "PRIVATE KEY", public keys start with specific key type identifiers
@@ -35,8 +41,8 @@ ssh-copy-keys() {
   } 2>/dev/null | sort -u)
   
   # Filter by key filename if provided
-  if [ -n "$key_filter" ]; then
-    keyfiles=$(printf '%s\n' "$keyfiles" | grep -E "(^|/)${key_filter}(\.pub)?$")
+  if [ -n "$key_filter_escaped" ]; then
+    keyfiles=$(printf '%s\n' "$keyfiles" | grep -E "(^|/)${key_filter_escaped}(\.pub)?$")
   fi
 
   if [ -z "$keyfiles" ]; then
