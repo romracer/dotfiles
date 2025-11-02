@@ -1,9 +1,9 @@
 # shellcheck shell=bash
 about-alias 'copy SSH keys to remote machine'
 
-ssh-copy-key() {
+ssh-copy-keys() {
   if [ -z "$1" ]; then
-    echo "Usage: ssh-copy-key user@host"
+    echo "Usage: ssh-copy-keys user@host"
     return 1
   fi
 
