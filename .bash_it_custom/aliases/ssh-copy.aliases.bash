@@ -15,7 +15,20 @@ ssh-copy-key() {
 
   # Copy SSH keys (both public and private) to remote machine
   # This allows the remote machine to use these keys for authentication to third parties
-  ssh "$1" "mkdir -p ~/.ssh && chmod 700 ~/.ssh" || return 1
-  scp -r ~/.ssh/id_* "$1:~/.ssh/" || return 1
-  ssh "$1" "chmod 600 ~/.ssh/id_* 2>/dev/null; chmod 644 ~/.ssh/id_*.pub 2>/dev/null; true"
+  # Using a single SSH command to avoid multiple authentication prompts
+  {
+    echo "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
+    for keyfile in ~/.ssh/id_*; do
+      if [ -f "$keyfile" ]; then
+        echo "cat > ~/.ssh/$(basename "$keyfile") << 'EOF_KEY_$(basename "$keyfile")'"
+        cat "$keyfile"
+        echo "EOF_KEY_$(basename "$keyfile")"
+        if [[ "$keyfile" == *.pub ]]; then
+          echo "chmod 644 ~/.ssh/$(basename "$keyfile")"
+        else
+          echo "chmod 600 ~/.ssh/$(basename "$keyfile")"
+        fi
+      fi
+    done
+  } | ssh "$1" "bash -s"
 }
