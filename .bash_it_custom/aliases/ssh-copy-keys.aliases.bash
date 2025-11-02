@@ -44,20 +44,35 @@ ssh-copy-keys() {
     echo "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
     printf '%s\n' "$keyfiles" | while IFS= read -r keyfile; do
       if [ -f "$keyfile" ]; then
-        filename=$(basename "$keyfile")
+        # Preserve subdirectory structure by getting relative path from ~/.ssh/
+        relative_path="${keyfile#"$HOME"/.ssh/}"
+        # Create subdirectory on remote host if needed
+        keydir=$(dirname "$relative_path")
+        if [ "$keydir" != "." ]; then
+          echo "mkdir -p ~/.ssh/$keydir && chmod 700 ~/.ssh/$keydir"
+        fi
         # Use base64 encoding to safely transfer binary/text content
-        echo "base64 -d > ~/.ssh/$filename << 'EOF_B64_KEY'"
+        echo "base64 -d > ~/.ssh/$relative_path << 'EOF_B64_KEY'"
         base64 < "$keyfile"
         echo "EOF_B64_KEY"
-        case "$filename" in
+        case "$relative_path" in
           *.pub)
-            echo "chmod 644 ~/.ssh/$filename"
+            echo "chmod 644 ~/.ssh/$relative_path"
             ;;
           *)
-            echo "chmod 600 ~/.ssh/$filename"
+            echo "chmod 600 ~/.ssh/$relative_path"
             ;;
         esac
       fi
     done
   } | ssh "$1" "sh -s"
+  
+  # Output each key that was copied
+  echo "Copied SSH keys:"
+  printf '%s\n' "$keyfiles" | while IFS= read -r keyfile; do
+    if [ -f "$keyfile" ]; then
+      relative_path="${keyfile#"$HOME"/.ssh/}"
+      echo "  ~/.ssh/$relative_path"
+    fi
+  done
 }
