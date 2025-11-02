@@ -7,8 +7,32 @@ ssh-copy-keys() {
     return 1
   fi
 
-  # Check if SSH keys exist
-  if ! ls ~/.ssh/id_* >/dev/null 2>&1; then
+  # Check if .ssh directory exists
+  if [ ! -d ~/.ssh ]; then
+    echo "Error: ~/.ssh/ directory not found"
+    return 1
+  fi
+
+  # Find all SSH keys (private and public) using grep
+  # Private keys contain "PRIVATE KEY", public keys start with specific key type identifiers
+  # Exclude common non-key files like authorized_keys, known_hosts, config
+  local keyfiles
+  keyfiles=$({
+    find ~/.ssh -type f \
+      ! -name "authorized_keys" \
+      ! -name "known_hosts" \
+      ! -name "config" \
+      ! -name "environment" \
+      -exec grep -lE "PRIVATE KEY" {} \;
+    find ~/.ssh -type f \
+      ! -name "authorized_keys" \
+      ! -name "known_hosts" \
+      ! -name "config" \
+      ! -name "environment" \
+      -exec grep -lE "^(ssh-rsa|ssh-dss|ssh-ed25519|ecdsa-sha2-)" {} \;
+  } 2>/dev/null | sort -u)
+
+  if [ -z "$keyfiles" ]; then
     echo "Error: No SSH keys found in ~/.ssh/"
     return 1
   fi
@@ -18,7 +42,7 @@ ssh-copy-keys() {
   # Using a single SSH command to avoid multiple authentication prompts
   {
     echo "mkdir -p ~/.ssh && chmod 700 ~/.ssh"
-    for keyfile in ~/.ssh/id_*; do
+    printf '%s\n' "$keyfiles" | while IFS= read -r keyfile; do
       if [ -f "$keyfile" ]; then
         filename=$(basename "$keyfile")
         # Use base64 encoding to safely transfer binary/text content
