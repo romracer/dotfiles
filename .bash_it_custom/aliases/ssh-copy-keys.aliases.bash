@@ -15,8 +15,14 @@ ssh-copy-keys() {
 
   # Find all SSH keys (private and public) using grep
   # Private keys contain "PRIVATE KEY", public keys start with "ssh-" or "ecdsa-"
+  # Exclude common non-key files like authorized_keys, known_hosts, config
   local keyfiles
-  keyfiles=$(find ~/.ssh -type f \( -exec grep -lE "PRIVATE KEY" {} \; -o -exec grep -lE "^(ssh-|ecdsa-)" {} \; \) 2>/dev/null | sort -u)
+  keyfiles=$(find ~/.ssh -type f \
+    ! -name "authorized_keys" \
+    ! -name "known_hosts" \
+    ! -name "config" \
+    ! -name "environment" \
+    \( -exec grep -lE "PRIVATE KEY" {} \; -o -exec grep -lE "^(ssh-|ecdsa-)" {} \; \) 2>/dev/null | sort -u)
 
   if [ -z "$keyfiles" ]; then
     echo "Error: No SSH keys found in ~/.ssh/"
