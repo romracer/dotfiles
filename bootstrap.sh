@@ -27,6 +27,7 @@ if [ ! -d "$HOME/.cfg" ]; then
   git clone --bare git@github.com:romracer/dotfiles.git $HOME/.cfg
 
   mkdir -p .config-backup
+  set +e
   dotfiles checkout
 
   if [ $? = 0 ]; then
@@ -43,6 +44,7 @@ if [ ! -d "$HOME/.cfg" ]; then
       exit 1
     fi
   fi
+  set -e
 
   dotfiles config status.showUntrackedFiles no
 fi
