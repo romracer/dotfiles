@@ -6,6 +6,6 @@ ssh-copy-key() {
     echo "Usage: ssh-copy-key user@host"
     return 1
   fi
-  
+
   ssh-copy-id "$1"
 }
