@@ -11,22 +11,65 @@ dotfiles() {
    git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
 }
 
+BASH_IT_REPO="https://github.com/Bash-it/bash-it.git"
+DOTFILES_REPO="https://github.com/romracer/dotfiles.git"
+
 if ! command_exists git; then
   echo "ERROR: git not found. dotfiles setup requires git."
   exit 1
 fi
 
+if ! command_exists curl; then
+  echo "ERROR: curl not found. dotfiles setup requires curl."
+  exit 1
+fi
+
+if ! command_exists jq; then
+  echo "INFO: jq not found. installing jq via webi."
+  curl -sS https://webi.sh/jq | sh; \
+  source ~/.config/envman/PATH.env
+fi
+
+if [ $(whoami) = "coder" ]; then
+  echo "INFO: running as coder user."
+
+  (if [ -z "${CODER_AGENT_URL:-}" ] || [ -z "${CODER_AGENT_TOKEN:-}" ]; then
+    echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
+    exit
+  fi)
+
+  if [ ! -f ~/.ssh/git-commit-signing/coder ] || [ ! -f ~/.ssh/git-commit-signing/coder.pub ]; then
+    mkdir -p ~/.ssh/git-commit-signing
+    chmod 700 ~/.ssh && chmod 700 ~/.ssh/git-commit-signing
+
+    ssh_key=$(curl --request GET \
+      --url "${CODER_AGENT_URL}api/v2/workspaceagents/me/gitsshkey" \
+      --header "Coder-Session-Token: ${CODER_AGENT_TOKEN}" \
+      --silent --show-error)
+
+    jq --raw-output ".public_key" > ~/.ssh/git-commit-signing/coder.pub <<< $ssh_key
+    jq --raw-output ".private_key" > ~/.ssh/git-commit-signing/coder <<< $ssh_key
+
+    chmod 600 ~/.ssh/git-commit-signing/coder
+    chmod 644 ~/.ssh/git-commit-signing/coder.pub
+  fi
+fi
+
+if ! command_exists gh; then
+  echo "INFO: GitHub CLI (gh) not found. installing gh via webi."
+  curl -sS https://webi.sh/gh | sh; \
+  source ~/.config/envman/PATH.env
+fi
+
 if [ ! -d "$HOME/.bash_it" ]; then
-  git clone --depth=1 https://github.com/Bash-it/bash-it.git $HOME/.bash_it
+  git clone --depth=1 $BASH_IT_REPO $HOME/.bash_it
   chmod +x $HOME/.bash_it/install.sh
   $HOME/.bash_it/install.sh -n
 fi
 
 if [ ! -d "$HOME/.cfg" ]; then
-  if command_exists ssh-keyscan; then
-    ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> ~/.ssh/known_hosts
-  fi
-  git clone --bare git@github.com:romracer/dotfiles.git $HOME/.cfg
+  ssh-keygen -F github.com || ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> ~/.ssh/known_hosts
+  git clone --bare $DOTFILES_REPO $HOME/.cfg
 
   mkdir -p $HOME/.config-backup
   set +e
