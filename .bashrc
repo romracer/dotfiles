@@ -77,3 +77,7 @@ BASH_IT_CUSTOM="${HOME}/.bash_it_custom"
 
 # Load Bash It
 source "${BASH_IT?}/bash_it.sh"
+
+if [[ -s $HOME/.config/envman/PATH.env ]]; then
+	source $HOME/.config/envman/PATH.env
+fi

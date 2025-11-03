@@ -27,48 +27,11 @@ fi
 if ! command_exists jq; then
   echo "INFO: jq not found. installing jq via webi."
   curl -sS https://webi.sh/jq | sh; \
-  source ~/.config/envman/PATH.env
-fi
-
-if [ $(whoami) = "coder" ]; then
-  echo "INFO: running as coder user."
-
-  (if [ -z "${CODER_AGENT_URL:-}" ] || [ -z "${CODER_AGENT_TOKEN:-}" ]; then
-    echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
-    exit
-  fi)
-
-  if [ ! -f ~/.ssh/git-commit-signing/coder ] || [ ! -f ~/.ssh/git-commit-signing/coder.pub ]; then
-    mkdir -p ~/.ssh/git-commit-signing
-    chmod 700 ~/.ssh && chmod 700 ~/.ssh/git-commit-signing
-
-    ssh_key=$(curl --request GET \
-      --url "${CODER_AGENT_URL}api/v2/workspaceagents/me/gitsshkey" \
-      --header "Coder-Session-Token: ${CODER_AGENT_TOKEN}" \
-      --silent --show-error)
-
-    jq --raw-output ".public_key" > ~/.ssh/git-commit-signing/coder.pub <<< $ssh_key
-    jq --raw-output ".private_key" > ~/.ssh/git-commit-signing/coder <<< $ssh_key
-
-    chmod 600 ~/.ssh/git-commit-signing/coder
-    chmod 644 ~/.ssh/git-commit-signing/coder.pub
-  fi
-fi
-
-if ! command_exists gh; then
-  echo "INFO: GitHub CLI (gh) not found. installing gh via webi."
-  curl -sS https://webi.sh/gh | sh; \
-  source ~/.config/envman/PATH.env
-fi
-
-if [ ! -d "$HOME/.bash_it" ]; then
-  git clone --depth=1 $BASH_IT_REPO $HOME/.bash_it
-  chmod +x $HOME/.bash_it/install.sh
-  $HOME/.bash_it/install.sh -n
+  source $HOME/.config/envman/PATH.env
 fi
 
 if [ ! -d "$HOME/.cfg" ]; then
-  ssh-keygen -F github.com || ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> ~/.ssh/known_hosts
+  ssh-keygen -F github.com || ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> $HOME/.ssh/known_hosts
   git clone --bare $DOTFILES_REPO $HOME/.cfg
 
   mkdir -p $HOME/.config-backup
@@ -92,4 +55,46 @@ if [ ! -d "$HOME/.cfg" ]; then
   set -e
 
   dotfiles config status.showUntrackedFiles no
+fi
+
+if ! command_exists gh; then
+  echo "INFO: GitHub CLI (gh) not found. installing gh via webi."
+  curl -sS https://webi.sh/gh | sh; \
+  source $HOME/.config/envman/PATH.env
+fi
+
+if [ ! -d "$HOME/.bash_it" ]; then
+  git clone --depth=1 $BASH_IT_REPO $HOME/.bash_it
+  chmod +x $HOME/.bash_it/install.sh
+  $HOME/.bash_it/install.sh -n
+  ln -sf "$HOME/.bash_it_custom/profiles/my_profile.bash_it" "$HOME/.bash_it/profiles/"
+  ln -sf "$HOME/.bash_it_custom/profiles/work_profile.bash_it" "$HOME/.bash_it/profiles/"
+  bash-it profile load my_profile
+fi
+
+if [ $(whoami) = "coder" ]; then
+  echo "INFO: running as coder user."
+
+  (if [ -z "${CODER_AGENT_URL:-}" ] || [ -z "${CODER_AGENT_TOKEN:-}" ]; then
+    echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
+    exit
+  fi)
+
+  if [ ! -f $HOME/.ssh/git-commit-signing/coder ] || [ ! -f $HOME/.ssh/git-commit-signing/coder.pub ]; then
+    mkdir -p $HOME/.ssh/git-commit-signing
+    chmod 700 $HOME/.ssh && chmod 700 $HOME/.ssh/git-commit-signing
+
+    ssh_key=$(curl --request GET \
+      --url "${CODER_AGENT_URL}api/v2/workspaceagents/me/gitsshkey" \
+      --header "Coder-Session-Token: ${CODER_AGENT_TOKEN}" \
+      --silent --show-error)
+
+    jq --raw-output ".public_key" > $HOME/.ssh/git-commit-signing/coder.pub <<< $ssh_key
+    jq --raw-output ".private_key" > $HOME/.ssh/git-commit-signing/coder <<< $ssh_key
+
+    chmod 600 $HOME/.ssh/git-commit-signing/coder
+    chmod 644 $HOME/.ssh/git-commit-signing/coder.pub
+  fi
+
+  ssh-add $HOME/.ssh/git-commit-signing/coder
 fi

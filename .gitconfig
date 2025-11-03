@@ -12,3 +12,5 @@
 [credential "https://gist.github.com"]
 	helper =
 	helper = !gh auth git-credential
+[tag]
+	gpgsign = true
