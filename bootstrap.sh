@@ -75,26 +75,25 @@ fi
 if [ $(whoami) = "coder" ]; then
   echo "INFO: running as coder user."
 
-  (if [ -z "${CODER_AGENT_URL:-}" ] || [ -z "${CODER_AGENT_TOKEN:-}" ]; then
-    echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
-    exit
-  fi)
+  if [ ! -s $HOME/.ssh/git-commit-signing/coder ] || [ ! -s $HOME/.ssh/git-commit-signing/coder.pub ]; then
+    if [ -n "${CODER_AGENT_URL:-}" ] && [ -n "${CODER_AGENT_TOKEN:-}" ]; then
+      mkdir -p $HOME/.ssh/git-commit-signing
+      chmod 700 $HOME/.ssh && chmod 700 $HOME/.ssh/git-commit-signing
 
-  if [ ! -f $HOME/.ssh/git-commit-signing/coder ] || [ ! -f $HOME/.ssh/git-commit-signing/coder.pub ]; then
-    mkdir -p $HOME/.ssh/git-commit-signing
-    chmod 700 $HOME/.ssh && chmod 700 $HOME/.ssh/git-commit-signing
+      ssh_key=$(curl --request GET \
+        --url "${CODER_AGENT_URL}api/v2/workspaceagents/me/gitsshkey" \
+        --header "Coder-Session-Token: ${CODER_AGENT_TOKEN}" \
+        --silent --show-error)
 
-    ssh_key=$(curl --request GET \
-      --url "${CODER_AGENT_URL}api/v2/workspaceagents/me/gitsshkey" \
-      --header "Coder-Session-Token: ${CODER_AGENT_TOKEN}" \
-      --silent --show-error)
+      jq --raw-output ".public_key" > $HOME/.ssh/git-commit-signing/coder.pub <<< $ssh_key
+      jq --raw-output ".private_key" > $HOME/.ssh/git-commit-signing/coder <<< $ssh_key
 
-    jq --raw-output ".public_key" > $HOME/.ssh/git-commit-signing/coder.pub <<< $ssh_key
-    jq --raw-output ".private_key" > $HOME/.ssh/git-commit-signing/coder <<< $ssh_key
-
-    chmod 600 $HOME/.ssh/git-commit-signing/coder
-    chmod 644 $HOME/.ssh/git-commit-signing/coder.pub
+      chmod 600 $HOME/.ssh/git-commit-signing/coder
+      chmod 644 $HOME/.ssh/git-commit-signing/coder.pub
+    else
+      echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
+    fi
+  else
+    ssh-add $HOME/.ssh/git-commit-signing/coder
   fi
-
-  ssh-add $HOME/.ssh/git-commit-signing/coder
 fi
