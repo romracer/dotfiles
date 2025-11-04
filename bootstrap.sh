@@ -94,6 +94,8 @@ if [ $(whoami) = "coder" ]; then
 
       chmod 600 $HOME/.ssh/git-commit-signing/coder
       chmod 644 $HOME/.ssh/git-commit-signing/coder.pub
+
+      faketty bash -ic "ssh-add $HOME/.ssh/git-commit-signing/coder"
     else
       echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
     fi
