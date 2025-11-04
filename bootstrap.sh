@@ -67,10 +67,9 @@ if [ ! -d "$HOME/.bash_it" ]; then
   git clone --depth=1 $BASH_IT_REPO $HOME/.bash_it
   chmod +x $HOME/.bash_it/install.sh
   $HOME/.bash_it/install.sh -n
-  source $HOME/.bashrc
   ln -sf "$HOME/.bash_it_custom/profiles/my_profile.bash_it" "$HOME/.bash_it/profiles/"
   ln -sf "$HOME/.bash_it_custom/profiles/work_profile.bash_it" "$HOME/.bash_it/profiles/"
-  bash-it profile load my_profile
+  bash -ic "bash-it profile load my_profile;exit"
 fi
 
 if [ $(whoami) = "coder" ]; then
