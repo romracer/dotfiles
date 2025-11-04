@@ -2,15 +2,15 @@
 	format = ssh
 [commit]
 	gpgsign = true
+[tag]
+	gpgsign = true
 [user]
-	signingkey = ~/.ssh/git-commit-signing/coder.pub
 	name = romracer
 	email = romracer@noreply.users.github.com
+	signingkey = ~/.ssh/git-commit-signing/coder.pub
 [credential "https://github.com"]
 	helper =
 	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper =
 	helper = !gh auth git-credential
-[tag]
-	gpgsign = true
