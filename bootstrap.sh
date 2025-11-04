@@ -94,6 +94,6 @@ if [ $(whoami) = "coder" ]; then
       echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
     fi
   else
-    ssh-add $HOME/.ssh/git-commit-signing/coder
+    bash -ic "ssh-add $HOME/.ssh/git-commit-signing/coder;exit"
   fi
 fi
