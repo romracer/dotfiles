@@ -35,6 +35,9 @@ if ! command_exists jq; then
 fi
 
 if [ ! -d "$HOME/.cfg" ]; then
+  mkdir -p $HOME/.ssh
+  touch $HOME/.ssh/known_hosts
+  chmod 700 $HOME/.ssh && chmod 644 $HOME/.ssh/known_hosts
   ssh-keygen -F github.com || ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> $HOME/.ssh/known_hosts
   git clone --bare --single-branch $DOTFILES_REPO $HOME/.cfg
 
