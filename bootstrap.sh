@@ -36,7 +36,7 @@ fi
 
 if [ ! -d "$HOME/.cfg" ]; then
   ssh-keygen -F github.com || ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> $HOME/.ssh/known_hosts
-  git clone --bare $DOTFILES_REPO $HOME/.cfg
+  git clone --bare --single-branch $DOTFILES_REPO $HOME/.cfg
 
   mkdir -p $HOME/.config-backup
   set +e
@@ -59,6 +59,7 @@ if [ ! -d "$HOME/.cfg" ]; then
   set -e
 
   dotfiles config status.showUntrackedFiles no
+  dotfiles config --add remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 fi
 
 if ! command_exists gh; then
