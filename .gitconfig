@@ -6,7 +6,7 @@
 	gpgsign = true
 [user]
 	name = romracer
-	email = romracer@noreply.users.github.com
+	email = romracer@users.noreply.github.com
 	signingkey = ~/.ssh/git-commit-signing/coder.pub
 [credential "https://github.com"]
 	helper =
