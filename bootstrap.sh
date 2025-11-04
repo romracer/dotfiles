@@ -8,9 +8,13 @@ command_exists() {
 }
 
 dotfiles() {
-   git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
+  git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
 }
 
+faketty () {
+  script -qefc "$(printf "%q " "$@")" /dev/null
+}
+ 
 BASH_IT_REPO="https://github.com/Bash-it/bash-it.git"
 DOTFILES_REPO="https://github.com/romracer/dotfiles.git"
 
@@ -69,7 +73,7 @@ if [ ! -d "$HOME/.bash_it" ]; then
   $HOME/.bash_it/install.sh -n
   ln -sf "$HOME/.bash_it_custom/profiles/my_profile.bash_it" "$HOME/.bash_it/profiles/"
   ln -sf "$HOME/.bash_it_custom/profiles/work_profile.bash_it" "$HOME/.bash_it/profiles/"
-  bash -ic "bash-it profile load my_profile;exit"
+  faketty bash -ic "bash-it profile load my_profile;exit"
 fi
 
 if [ $(whoami) = "coder" ]; then
@@ -94,6 +98,6 @@ if [ $(whoami) = "coder" ]; then
       echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
     fi
   else
-    bash -ic "ssh-add $HOME/.ssh/git-commit-signing/coder;exit"
+    faketty bash -ic "ssh-add $HOME/.ssh/git-commit-signing/coder;exit"
   fi
 fi
