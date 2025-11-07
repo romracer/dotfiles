@@ -102,6 +102,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
 # load git commit signing key if it exists and is not already loaded
 KEY_PATH="$HOME/.ssh/git-commit-signing/coder"
 KEY_PUB="$HOME/.ssh/git-commit-signing/coder.pub"
