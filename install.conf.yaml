@@ -1,4 +1,7 @@
 - shell:
   - [git submodule sync --quiet --recursive, Syncing submodules]
   - [git submodule update --init --recursive, Installing submodules]
-  - [bash ./dotfiles.sh, Running dotfiles.sh]
+  - command: bash ./dotfiles.sh
+    description: Running dotfiles.sh
+    stdout: true
+    stderr: true
