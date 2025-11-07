@@ -62,7 +62,10 @@ if [ ! -d "$HOME/.cfg" ]; then
   set -e
 
   dotfiles config status.showUntrackedFiles no
-  dotfiles config --add remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+  dotfiles config --local --add remote.origin.url "$DOTFILES_REPO"
+  dotfiles config --local --add remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+  dotfiles config --local --add branch.master.remote "origin"
+  dotfiles config --local --add branch.master.merge "refs/heads/master"
 fi
 
 if ! command_exists gh; then
