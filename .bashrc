@@ -118,3 +118,6 @@ if [ -s "$KEY_PATH" ] && [ -s "$KEY_PUB" ]; then
         ssh-add "$KEY_PATH"
     fi
 fi
+
+# load autoenv .env in home directory
+cd $HOME
