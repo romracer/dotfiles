@@ -102,11 +102,16 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# load git commit signing key if it exists
-if [ -s $HOME/.ssh/git-commit-signing/coder ] && [ -s $HOME/.ssh/git-commit-signing/coder.pub ]; then
-   chmod 700 $HOME/.ssh && chmod 700 $HOME/.ssh/git-commit-signing
-   chmod 600 $HOME/.ssh/git-commit-signing/coder
-   chmod 644 $HOME/.ssh/git-commit-signing/coder.pub
+# load git commit signing key if it exists and is not already loaded
+KEY_PATH="$HOME/.ssh/git-commit-signing/coder"
+KEY_PUB="$HOME/.ssh/git-commit-signing/coder.pub"
+if [ -s "$KEY_PATH" ] && [ -s "$KEY_PUB" ]; then
+    chmod 700 "$HOME/.ssh" && chmod 700 "$HOME/.ssh/git-commit-signing"
+    chmod 600 "$KEY_PATH"
+    chmod 644 "$KEY_PUB"
 
-   ssh-add $HOME/.ssh/git-commit-signing/coder
+    # Only add key if not already loaded
+    if ! ssh-add -l | grep -q "$(ssh-keygen -lf "$KEY_PUB" | awk '{print $2}')"; then
+        ssh-add "$KEY_PATH"
+    fi
 fi
