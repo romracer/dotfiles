@@ -2,7 +2,12 @@
 
 # plugins
 plugins base
+plugins extract
+plugins history
+plugins man
 plugins sshagent
+plugins tmux
+plugins xterm
 completion aliases
 completion bash-it
 completion system

@@ -3,8 +3,8 @@
 
 # If not running interactively, don't do anything
 case $- in
-	*i*) ;;
-	*) return ;;
+    *i*) ;;
+    *) return ;;
 esac
 
 # Path to the bash it configuration
@@ -67,10 +67,10 @@ BASH_IT_COMMAND_DURATION=true
 
 # (Advanced): Uncomment this to make Bash-it reload itself automatically
 # after enabling or disabling aliases, plugins, and completions.
-# BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1
+#BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1
 
 # Uncomment this to make Bash-it create alias reload.
-# BASH_IT_RELOAD_LEGACY=1
+#BASH_IT_RELOAD_LEGACY=1
 
 # Custom Bash It content location
 BASH_IT_CUSTOM="${HOME}/.bash_it_custom"
@@ -83,6 +83,23 @@ POWERLINE_PROMPT="user_info hostname scm k8s_context k8s_namespace duration cwd 
 # Load Bash It
 source "${BASH_IT?}/bash_it.sh"
 
+# Load webinstall.dev paths
 if [[ -s $HOME/.config/envman/PATH.env ]]; then
-	source $HOME/.config/envman/PATH.env
+    source $HOME/.config/envman/PATH.env
+fi
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 fi
