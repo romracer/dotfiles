@@ -83,10 +83,8 @@ POWERLINE_PROMPT="user_info hostname scm k8s_context k8s_namespace duration cwd 
 # Load Bash It
 source "${BASH_IT?}/bash_it.sh"
 
-# Load webinstall.dev paths
-if [[ -s $HOME/.config/envman/PATH.env ]]; then
-    source $HOME/.config/envman/PATH.env
-fi
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
