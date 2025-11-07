@@ -101,3 +101,12 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
+# load git commit signing key if it exists
+if [ -s $HOME/.ssh/git-commit-signing/coder ] && [ -s $HOME/.ssh/git-commit-signing/coder.pub ]; then
+   chmod 700 $HOME/.ssh && chmod 700 $HOME/.ssh/git-commit-signing
+   chmod 600 $HOME/.ssh/git-commit-signing/coder
+   chmod 644 $HOME/.ssh/git-commit-signing/coder.pub
+
+   ssh-add $HOME/.ssh/git-commit-signing/coder"
+fi
