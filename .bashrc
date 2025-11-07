@@ -108,5 +108,5 @@ if [ -s $HOME/.ssh/git-commit-signing/coder ] && [ -s $HOME/.ssh/git-commit-sign
    chmod 600 $HOME/.ssh/git-commit-signing/coder
    chmod 644 $HOME/.ssh/git-commit-signing/coder.pub
 
-   ssh-add $HOME/.ssh/git-commit-signing/coder"
+   ssh-add $HOME/.ssh/git-commit-signing/coder
 fi
