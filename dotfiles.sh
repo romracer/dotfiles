@@ -49,7 +49,8 @@ if [ ! -d "$HOME/.cfg" ]; then
     echo "OK: checked out dotfiles config."
   else
     echo "WARN: backing up pre-existing dotfiles."
-    dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} $HOME/.config-backup/{}
+    dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I% \
+      bash -c '{ mkdir -p $HOME/.config-backup/$(dirname %) && mv $HOME/% $HOME/.config-backup/% ; }'
     dotfiles checkout -f
 
     if [ $? = 0 ]; then
