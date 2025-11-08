@@ -113,11 +113,13 @@ if [ -s "$KEY_PATH" ] && [ -s "$KEY_PUB" ]; then
     chmod 600 "$KEY_PATH"
     chmod 644 "$KEY_PUB"
 
-    # Only add key if not already loaded
-    if ! ssh-add -l | grep -q "$(ssh-keygen -lf "$KEY_PUB" | awk '{print $2}')"; then
-        ssh-add "$KEY_PATH"
-    fi
+    ssh-add-if "$KEY_PATH"
 fi
 
 # load autoenv .env in home directory
+AUTOENV_AUTH_FILE=$HOME/.autoenv_authorized
+AUTOENV_NOTAUTH_FILE=$HOME/.autoenv_not_authorized
+AUTOENV_ENABLE_LEAVE=
+AUTOENV_VIEWER=cat
+[ -s "$HOME/.autoenv/activate.sh" ] && source "$HOME/.autoenv/activate.sh"
 cd $HOME

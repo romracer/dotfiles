@@ -5,9 +5,10 @@ plugins base
 plugins extract
 plugins history
 plugins sshagent
+plugins ssh-add-if
+plugins ssh-copy-keys
 plugins tmux
 plugins xterm
-plugins z_autoenv
 completion aliases
 completion bash-it
 completion system

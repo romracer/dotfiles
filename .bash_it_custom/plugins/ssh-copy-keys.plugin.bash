@@ -1,7 +1,14 @@
 # shellcheck shell=bash
-about-alias 'copy SSH keys to remote machine'
+cite about-plugin
+about-plugin 'copy SSH keys to remote machine'
+url "https://labs.underpants-gnomes.biz/"
 
 ssh-copy-keys() {
+  about 'copy ssh key to remote'
+  param '1: user@hostname'
+  param '2: key name ; Optional: specific key to copy'
+  group 'ssh'
+
   if [ -z "$1" ]; then
     echo "Usage: ssh-copy-keys user@host [keyname]"
     return 1

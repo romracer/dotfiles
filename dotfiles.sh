@@ -74,6 +74,10 @@ if ! command_exists gh; then
   source $HOME/.config/envman/PATH.env
 fi
 
+if [ ! -d "$HOME/.autoenv" ]; then
+  git clone 'https://github.com/hyperupcall/autoenv' $HOME/.autoenv
+fi
+
 if [ ! -d "$HOME/.bash_it" ]; then
   git clone --depth=1 $BASH_IT_REPO $HOME/.bash_it
   chmod +x $HOME/.bash_it/install.sh
@@ -102,11 +106,11 @@ if [ $(whoami) = "coder" ]; then
       chmod 600 $HOME/.ssh/git-commit-signing/coder
       chmod 644 $HOME/.ssh/git-commit-signing/coder.pub
 
-      faketty bash -ic "ssh-add $HOME/.ssh/git-commit-signing/coder"
+      faketty bash -ic "ssh-add-if $HOME/.ssh/git-commit-signing/coder"
     else
       echo "WARN: CODER_AGENT_URL or CODER_AGENT_TOKEN not set. skipping git commit signing setup."
     fi
   else
-    faketty bash -ic "ssh-add $HOME/.ssh/git-commit-signing/coder"
+    faketty bash -ic "ssh-add-if $HOME/.ssh/git-commit-signing/coder"
   fi
 fi
