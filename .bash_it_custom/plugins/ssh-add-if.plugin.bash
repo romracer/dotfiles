@@ -21,6 +21,6 @@ ssh-add-if() {
 
   # Only add key if not already loaded
   if ! ssh-add -L 2>/dev/null | ssh-keygen -lf /dev/stdin 2>/dev/null | grep -q "$(ssh-keygen -lf "$1" 2>/dev/null | awk '{print $2}')"; then
-    ssh-add "$KEY_PATH"
+    ssh-add "$1"
   fi
 }
