@@ -4,6 +4,8 @@
 	gpgsign = true
 [tag]
 	gpgsign = true
+[color]
+	ui = auto
 [user]
 	name = romracer
 	email = romracer@users.noreply.github.com
