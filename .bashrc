@@ -17,7 +17,7 @@ export BASH_IT_THEME='powerline-plain'
 
 # Some themes can show whether `sudo` has a current token or not.
 # Set `$THEME_CHECK_SUDO` to `true` to check every prompt:
-THEME_CHECK_SUDO='true'
+THEME_CHECK_SUDO='false'
 
 # (Advanced): Change this to the name of your remote repo if you
 # cloned bash-it with a remote other than origin such as `bash-it`.
@@ -46,20 +46,20 @@ TODO="t"
 SCM_CHECK=true
 
 # Set to actual location of gitstatus directory if installed
-#SCM_GIT_GITSTATUS_DIR="$HOME/gitstatus"
+SCM_GIT_GITSTATUS_DIR="$HOME/.gitstatus"
 # per default gitstatus uses 2 times as many threads as CPU cores, you can change this here if you must
-#export GITSTATUS_NUM_THREADS=8
+export GITSTATUS_NUM_THREADS=8
 
 # If your theme use command duration, uncomment this to
 # enable display of last command duration.
-BASH_IT_COMMAND_DURATION=true
+#BASH_IT_COMMAND_DURATION=true
 # You can choose the minimum time in seconds before
 # command duration is displayed.
 #COMMAND_DURATION_MIN_SECONDS=1
 
 # Set Xterm/screen/Tmux title with shortened command and directory.
 # Uncomment this to set.
-#SHORT_TERM_LINE=true
+SHORT_TERM_LINE=true
 
 # Set vcprompt executable path for scm advance info in prompt (demula theme)
 # https://github.com/djl/vcprompt
@@ -77,11 +77,10 @@ BASH_IT_CUSTOM="${HOME}/.bash_it_custom"
 
 # Custom Bash It variables
 COMMAND_DURATION_PROMPT_COLOR=${POWERLINE_COMMAND_DURATION_COLOR:=129}
-export POWERLINE_PROMPT_USER_INFO_MODE="sudo"
-POWERLINE_PROMPT="user_info hostname scm k8s_context k8s_namespace duration cwd last_status"
+POWERLINE_PROMPT="user_info hostname scm k8s_context k8s_namespace cwd last_status"
 
 # Load Bash It
-source "${BASH_IT?}/bash_it.sh"
+[ -s "${BASH_IT?}/bash_it.sh" ] && source "${BASH_IT?}/bash_it.sh"
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

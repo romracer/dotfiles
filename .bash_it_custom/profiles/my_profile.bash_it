@@ -3,6 +3,7 @@
 # plugins
 plugins base
 plugins extract
+plugins gitstatus
 plugins history
 plugins sshagent
 plugins tmux
