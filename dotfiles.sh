@@ -28,12 +28,6 @@ if ! command_exists curl; then
   exit 1
 fi
 
-if ! command_exists jq; then
-  echo "INFO: jq not found. installing jq via webi."
-  curl -sS https://webi.sh/jq | sh; \
-  source $HOME/.config/envman/PATH.env
-fi
-
 if [ ! -d "$HOME/.cfg" ]; then
   mkdir -p $HOME/.ssh
   touch $HOME/.ssh/known_hosts
@@ -69,12 +63,6 @@ if [ ! -d "$HOME/.cfg" ]; then
   dotfiles config --local --add branch.master.merge "refs/heads/master"
 fi
 
-if ! command_exists gh; then
-  echo "INFO: GitHub CLI (gh) not found. installing gh via webi."
-  curl -sS https://webi.sh/gh | sh; \
-  source $HOME/.config/envman/PATH.env
-fi
-
 if [ ! -d "$HOME/.autoenv" ]; then
   git clone 'https://github.com/hyperupcall/autoenv' $HOME/.autoenv
 fi
@@ -86,6 +74,18 @@ if [ ! -d "$HOME/.bash_it" ]; then
   ln -sf "$HOME/.bash_it_custom/profiles/my_profile.bash_it" "$HOME/.bash_it/profiles/"
   ln -sf "$HOME/.bash_it_custom/profiles/work_profile.bash_it" "$HOME/.bash_it/profiles/"
   faketty bash -ic "bash-it profile load my_profile"
+fi
+
+if ! command_exists jq; then
+  echo "INFO: jq not found. installing jq via webi."
+  curl -sS https://webi.sh/jq | sh; \
+  source $HOME/.config/envman/PATH.env
+fi
+
+if ! command_exists gh; then
+  echo "INFO: GitHub CLI (gh) not found. installing gh via webi."
+  curl -sS https://webi.sh/gh | sh; \
+  source $HOME/.config/envman/PATH.env
 fi
 
 if [ $(whoami) = "coder" ]; then
