@@ -77,7 +77,7 @@ BASH_IT_CUSTOM="${HOME}/.bash_it_custom"
 
 # Custom Bash It variables
 COMMAND_DURATION_PROMPT_COLOR=${POWERLINE_COMMAND_DURATION_COLOR:=129}
-POWERLINE_PROMPT="user_info hostname scm k8s_context k8s_namespace cwd last_status"
+POWERLINE_PROMPT="user_info hostname scm k8s_context cwd last_status"
 
 # Load Bash It
 [ -s "${BASH_IT?}/bash_it.sh" ] && source "${BASH_IT?}/bash_it.sh"
