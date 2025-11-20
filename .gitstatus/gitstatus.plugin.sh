@@ -265,7 +265,7 @@ function gitstatus_start() {
   if ! gitstatus_start_impl; then
     >&2 printf '\n'
     >&2 printf '[\033[31mERROR\033[0m]: gitstatus failed to initialize.\n'
-    if [[ -n "${culprit-}" ]]; then
+    if [[ -n "${culprit:-}" ]]; then
       >&2 printf '\n%s\n' "$culprit"
     fi
     [[ -z "${req_fifo:-}"  ]] || command rm -f "$req_fifo"
@@ -371,7 +371,7 @@ function gitstatus_query() {
   done
   (( OPTIND == $# + 1 )) || { echo "usage: gitstatus_query [OPTION]..." >&2; return 1; }
 
-  [[ -n "${GITSTATUS_DAEMON_PID-}" ]] || return  # not started
+  [[ -n "${GITSTATUS_DAEMON_PID:-}" ]] || return  # not started
 
   local req_id="$RANDOM.$RANDOM.$RANDOM.$RANDOM"
   if [[ -z "${GIT_DIR:-}" ]]; then
@@ -416,8 +416,8 @@ function gitstatus_query() {
     VCS_STATUS_PUSH_COMMITS_BEHIND="${resp[24]:-0}"
     VCS_STATUS_NUM_SKIP_WORKTREE="${resp[25]:-0}"
     VCS_STATUS_NUM_ASSUME_UNCHANGED="${resp[26]:-0}"
-    VCS_STATUS_COMMIT_ENCODING="${resp[27]-}"
-    VCS_STATUS_COMMIT_SUMMARY="${resp[28]-}"
+    VCS_STATUS_COMMIT_ENCODING="${resp[27]:-}"
+    VCS_STATUS_COMMIT_SUMMARY="${resp[28]:-}"
     VCS_STATUS_HAS_STAGED=$((VCS_STATUS_NUM_STAGED > 0))
     if (( _GITSTATUS_DIRTY_MAX_INDEX_SIZE >= 0 &&
           VCS_STATUS_INDEX_SIZE > _GITSTATUS_DIRTY_MAX_INDEX_SIZE_ )); then
@@ -470,5 +470,5 @@ function gitstatus_query() {
 # Returns 0 if and only if gitstatus_start has succeeded previously.
 # If it returns non-zero, gitstatus_query is guaranteed to return non-zero.
 function gitstatus_check() {
-  [[ -n "$GITSTATUS_DAEMON_PID" ]]
+  [[ -n "${GITSTATUS_DAEMON_PID:-}" ]]
 }
