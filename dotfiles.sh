@@ -88,6 +88,11 @@ if ! command_exists gh; then
   source $HOME/.config/envman/PATH.env
 fi
 
+if ! command_exists oh-my-posh; then
+  echo "INFO: oh-my-posh not found. installing oh-my-posh."
+  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
+fi
+
 if [ $(whoami) = "coder" ]; then
   echo "INFO: running as coder user."
 
