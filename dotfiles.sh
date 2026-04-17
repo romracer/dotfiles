@@ -67,6 +67,11 @@ if [ ! -d "$HOME/.autoenv" ]; then
   git clone 'https://github.com/hyperupcall/autoenv' $HOME/.autoenv
 fi
 
+if ! command_exists oh-my-posh; then
+  echo "INFO: oh-my-posh not found. installing oh-my-posh."
+  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
+fi
+
 if [ ! -d "$HOME/.bash_it" ]; then
   git clone --depth=1 $BASH_IT_REPO $HOME/.bash_it
   chmod +x $HOME/.bash_it/install.sh
@@ -86,11 +91,6 @@ if ! command_exists gh; then
   echo "INFO: GitHub CLI (gh) not found. installing gh via webi."
   curl -sS https://webi.sh/gh | sh; \
   source $HOME/.config/envman/PATH.env
-fi
-
-if ! command_exists oh-my-posh; then
-  echo "INFO: oh-my-posh not found. installing oh-my-posh."
-  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
 fi
 
 if [ $(whoami) = "coder" ]; then
