@@ -67,6 +67,12 @@ if [ ! -d "$HOME/.autoenv" ]; then
   git clone 'https://github.com/hyperupcall/autoenv' $HOME/.autoenv
 fi
 
+if [ ! -d "$HOME/.local/share/blesh" ]; then
+  curl -L https://github.com/akinomyoga/ble.sh/releases/download/nightly/ble-nightly.tar.xz | tar xJf -
+  bash ble-nightly/ble.sh --install ~/.local/share
+  rm -rf ble-nightly/
+fi
+
 if ! command_exists oh-my-posh; then
   echo "INFO: oh-my-posh not found. installing oh-my-posh."
   curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
