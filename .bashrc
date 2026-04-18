@@ -13,7 +13,7 @@ BASH_IT="${HOME}/.bash_it"
 # Lock and Load a custom theme file.
 # Leave empty to disable theming.
 # location "$BASH_IT"/themes/
-export BASH_IT_THEME='powerline-plain'
+export BASH_IT_THEME='oh-my-posh'
 
 # Some themes can show whether `sudo` has a current token or not.
 # Set `$THEME_CHECK_SUDO` to `true` to check every prompt:
@@ -119,6 +119,16 @@ if [ -s "$KEY_PATH" ] && [ -s "$KEY_PUB" ]; then
 
     ssh-add-if "$KEY_PATH"
 fi
+
+# load ble.sh
+source -- ${HOME}/.local/share/blesh/ble.sh
+bleopt exec_restore_pipestatus=1
+bleopt complete_auto_delay=500
+bleopt complete_ambiguous=
+bleopt exec_elapsed_mark=
+
+# load oh-my-posh configuration
+eval "$($HOME/.local/bin/oh-my-posh init bash --config ~/.oh-my-posh/themes/janededeobbeleer.omp.json)"
 
 # load autoenv .env in home directory
 AUTOENV_AUTH_FILE=$HOME/.autoenv_authorized
