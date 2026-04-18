@@ -125,7 +125,9 @@ source -- ${HOME}/.local/share/blesh/ble.sh
 bleopt exec_restore_pipestatus=1
 bleopt complete_auto_delay=500
 bleopt complete_ambiguous=
+bleopt exec_errexit_mark=
 bleopt exec_elapsed_mark=
+bleopt exec_exit_mark=
 
 # load oh-my-posh configuration
 eval "$($HOME/.local/bin/oh-my-posh init bash --config ~/.oh-my-posh/themes/janededeobbeleer.omp.json)"
