@@ -28,6 +28,11 @@ if ! command_exists curl; then
   exit 1
 fi
 
+if ! command_exists unzip; then
+  echo "ERROR: unzip not found. dotfiles setup requires unzip."
+  exit 1
+fi
+
 if [ ! -d "$HOME/.cfg" ]; then
   mkdir -p $HOME/.ssh
   touch $HOME/.ssh/known_hosts
